@@ -10,112 +10,115 @@ using CadastroCliente.Models;
 
 namespace CadastroCliente.Controllers
 {
-    public class ClienteController : Controller
+    public class EnderecoClienteController : Controller
     {
         private CadastroClienteContext db = new CadastroClienteContext();
 
-        // GET: Cliente
+        // GET: EnderecoCliente
         public ActionResult Index()
         {
-            return View(db.Cliente.ToList());
+            var enderecoCliente = db.EnderecoCliente.Include(e => e.Clientes);
+            return View(enderecoCliente.ToList());
         }
 
-        // GET: Cliente/Details/5
+        // GET: EnderecoCliente/Details/5
         public ActionResult Details(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ClienteModel clienteModel = db.Cliente.Find(id);
-            if (clienteModel == null)
+            EnderecoClienteModel enderecoClienteModel = db.EnderecoCliente.Find(id);
+            if (enderecoClienteModel == null)
             {
                 return HttpNotFound();
             }
-            return View(clienteModel);
+            return View(enderecoClienteModel);
         }
 
-        // GET: Cliente/Create
+        // GET: EnderecoCliente/Create
         public ActionResult Create()
         {
-            var climodel = new ClienteModel();
-            climodel.Id_Cliente = 2;
-            return View(climodel);
+            ViewBag.Id_Cliente = new SelectList(db.Cliente, "Id_Cliente", "CPF");
+            return View();
         }
 
-        // POST: Cliente/Create
+        // POST: EnderecoCliente/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id_Cliente,CPF,Nome,RG,Data_Expedicao,Orgao_Expedicao,UF,Data_Nascimento,Sexo,Estado_Civil")] ClienteModel clienteModel)
+        public ActionResult Create([Bind(Include = "Id_EndCli,Id_Cliente,Clientes,CEP,Logradouro,Numero,Complemento,Bairro,Cidade,UF")] EnderecoClienteModel enderecoClienteModel)
         {
-            //clienteModel.Id_Cliente = 2;
             if (ModelState.IsValid)
             {
-                db.Cliente.Add(clienteModel);
+                enderecoClienteModel.Id_EndCli = 1;
+                enderecoClienteModel.Id_Cliente = 1;
+                enderecoClienteModel.Clientes.Id_Cliente = 1;
+                db.EnderecoCliente.Add(enderecoClienteModel);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
 
-            return View(clienteModel);
+            ViewBag.Id_Cliente = new SelectList(db.Cliente, "Id_Cliente", "CPF", enderecoClienteModel.Id_Cliente);
+            return View(enderecoClienteModel);
         }
 
-        // GET: Cliente/Edit/5
+        // GET: EnderecoCliente/Edit/5
         public ActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ClienteModel clienteModel = db.Cliente.Find(id);
-            if (clienteModel == null)
+            EnderecoClienteModel enderecoClienteModel = db.EnderecoCliente.Find(id);
+            if (enderecoClienteModel == null)
             {
                 return HttpNotFound();
             }
-            return View(clienteModel);
+            ViewBag.Id_Cliente = new SelectList(db.Cliente, "Id_Cliente", "CPF", enderecoClienteModel.Id_Cliente);
+            return View(enderecoClienteModel);
         }
 
-        // POST: Cliente/Edit/5
+        // POST: EnderecoCliente/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id_Cliente,CPF,Nome,RG,Data_Expedicao,Orgao_Expedicao,UF,Data_Nascimento,Sexo,Estado_Civil")] ClienteModel clienteModel)
+        public ActionResult Edit([Bind(Include = "Id_EndCli,Id_Cliente,CEP,Logradouro,Numero,Complemento,Bairro,Cidade,UF")] EnderecoClienteModel enderecoClienteModel)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(clienteModel).State = EntityState.Modified;
+                db.Entry(enderecoClienteModel).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            return View(clienteModel);
+            ViewBag.Id_Cliente = new SelectList(db.Cliente, "Id_Cliente", "CPF", enderecoClienteModel.Id_Cliente);
+            return View(enderecoClienteModel);
         }
 
-        // GET: Cliente/Delete/5
+        // GET: EnderecoCliente/Delete/5
         public ActionResult Delete(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ClienteModel clienteModel = db.Cliente.Find(id);
-            if (clienteModel == null)
+            EnderecoClienteModel enderecoClienteModel = db.EnderecoCliente.Find(id);
+            if (enderecoClienteModel == null)
             {
                 return HttpNotFound();
             }
-            return View(clienteModel);
+            return View(enderecoClienteModel);
         }
 
-        // POST: Cliente/Delete/5
+        // POST: EnderecoCliente/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            ClienteModel clienteModel = db.Cliente.Find(id);
-            var endModel = db.EnderecoCliente.Where(a => a.Id_Cliente == id).FirstOrDefault();
-            db.Cliente.Remove(clienteModel);
-            db.EnderecoCliente.Remove(endModel);
+            EnderecoClienteModel enderecoClienteModel = db.EnderecoCliente.Find(id);
+            db.EnderecoCliente.Remove(enderecoClienteModel);
             db.SaveChanges();
             return RedirectToAction("Index");
         }

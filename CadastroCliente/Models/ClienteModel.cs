@@ -7,7 +7,7 @@ using System.Web;
 
 namespace CadastroCliente.Models
 {
-    [Table("Cliente")]
+    [Table("CLIENTE")]
     public class ClienteModel
     {
         [Key]

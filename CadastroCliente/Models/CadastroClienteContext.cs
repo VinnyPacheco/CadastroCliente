@@ -12,5 +12,7 @@ namespace CadastroCliente.Models
         public DbSet<EnderecoClienteModel> EnderecoCliente { get; set; }
 
         public CadastroClienteContext() : base("CadastroCliente") { }
+
+
     }
 }
